@@ -1,0 +1,38 @@
+name: Pipeline de Integracion Continua
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verificar:
+    name: Verificar codigo Python
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: python -m pip install -r requirements.txt
+
+      - name: Comprobar sintaxis
+        run: python -m compileall -q calculadora.py test_calculadora.py
+
+      - name: Crear carpeta de reportes
+        run: mkdir -p reportes
+
+      - name: Ejecutar pruebas y generar reporte
+        run: python -m pytest -v --junitxml=reportes/pruebas.xml
+
+      - name: Guardar reporte como artefacto
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-de-pruebas
+          path: reportes/pruebas.xml
