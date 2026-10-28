@@ -74,16 +74,15 @@ jobs:
             -t calculadora-cd:scan-${{ matrix.suffix }} \
             .
 
-      - name: Instalar Trivy
-        uses: aquasecurity/setup-trivy@v0.2.3
-
-      - name: Escanear imagen y bloquear vulnerabilidades altas o críticas
-        run: |
-          trivy image \
-            --severity HIGH,CRITICAL \
-            --ignore-unfixed \
-            --exit-code 1 \
-            calculadora-cd:scan-${{ matrix.suffix }}
+      - name: Escanear imagen con Trivy
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: calculadora-cd:scan-${{ matrix.suffix }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          vuln-type: os,library
 
 
   gitleaks:
