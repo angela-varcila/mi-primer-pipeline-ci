@@ -44,6 +44,24 @@ jobs:
           path: reportes/pruebas.xml
   
 
+  gitleaks:
+    name: Detectar secretos
+    runs-on: ubuntu-latest
+    needs: verificar
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Ejecutar Gitleaks sobre archivos actuales
+        run: |
+          docker run --rm \
+            -v "$PWD:/path" \
+            zricethezav/gitleaks:latest \
+            detect --source=/path --no-git --redact --verbose --exit-code=1
+
+
   trivy:
     name: Analizar imagen Docker (${{ matrix.suffix }})
     runs-on: ubuntu-latest
@@ -83,27 +101,6 @@ jobs:
           ignore-unfixed: true
           exit-code: '1'
           vuln-type: os,library
-
-
-  gitleaks:
-    name: Detectar secretos
-    runs-on: ubuntu-latest
-    needs: verificar
-    steps:
-      - name: Obtener código
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
-
-      - name: Ejecutar Gitleaks sobre archivos actuales
-        run: |
-          docker run --rm \
-            -v "$PWD:/path" \
-            zricethezav/gitleaks:latest \
-            detect --source=/path --no-git --redact --exit-code=1
-
-
-
 
 
   publish:
