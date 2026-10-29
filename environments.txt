@@ -1,4 +1,0 @@
-# Credencial de prueba para el laboratorio DevSecOps
-aws_secret_access_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-database = postgresql://admin:PasswordSegura123!@localhost:5432/mi_base_datos
-
